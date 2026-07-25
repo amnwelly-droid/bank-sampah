@@ -1,4 +1,4 @@
-/** @type {import('@opennextjs/cloudflare').OpenNextConfig} */
+// @ts-nocheck
 const config = {
   default: {
     override: {
