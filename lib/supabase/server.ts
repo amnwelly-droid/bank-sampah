@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
+// OpenNext/Cloudflare compatible server client
 export async function createClient() {
   const cookieStore = await cookies()
 
@@ -12,13 +13,13 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll()
         },
-        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+        setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+            cookiesToSet.forEach(({ name, value, options }: { name: string; value: string; options?: Record<string, unknown> }) =>
+              cookieStore.set(name, value, options as never)
             )
           } catch {
-            // Called from Server Component - ignore
+            // Server Component context - ignore
           }
         },
       },
