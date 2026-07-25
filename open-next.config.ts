@@ -1,3 +1,8 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 
-export default defineCloudflareConfig({});
+export default defineCloudflareConfig({
+  edgeExternals: ["node:crypto"],
+  middleware: {
+    external: true,
+  },
+});
