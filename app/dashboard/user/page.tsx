@@ -8,7 +8,7 @@ import { formatCurrency, formatNumber, formatPoin, formatDateTime } from '@/lib/
 import type { Profile } from '@/types'
 
 export default async function UserDashboardPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

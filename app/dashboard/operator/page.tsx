@@ -4,7 +4,7 @@ import type { Profile, JenisSampah } from '@/types'
 import { InputTimbangForm } from './InputTimbangForm'
 
 export default async function OperatorPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

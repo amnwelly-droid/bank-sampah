@@ -14,7 +14,7 @@ const statusConfig = {
 }
 
 export default async function AdminPenarikanPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

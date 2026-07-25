@@ -14,7 +14,7 @@ export default async function NasabahPage({
 }: {
   searchParams: Promise<{ q?: string }>
 }) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

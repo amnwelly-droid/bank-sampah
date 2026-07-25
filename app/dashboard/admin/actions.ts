@@ -15,7 +15,7 @@ interface CreateUserPayload {
 
 export async function createUserAction(payload: CreateUserPayload) {
   // Pastikan yang memanggil adalah admin
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Tidak terautentikasi' }
 
@@ -65,7 +65,7 @@ export async function createUserAction(payload: CreateUserPayload) {
 
 export async function deleteUserAction(userId: string) {
   // Pastikan yang memanggil adalah admin
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Tidak terautentikasi' }
 

@@ -20,7 +20,7 @@ const kategoriColor: Record<string, string> = {
 }
 
 export default async function JenisSampahPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

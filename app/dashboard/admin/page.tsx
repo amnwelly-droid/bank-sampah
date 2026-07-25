@@ -8,7 +8,7 @@ import { formatCurrency, formatNumber, formatDateTime } from '@/lib/utils'
 import { AdminChart } from './AdminChart'
 
 export default async function AdminDashboardPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

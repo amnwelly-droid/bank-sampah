@@ -8,7 +8,7 @@ import type { Profile } from '@/types'
 import { AddOperatorButton } from './AddOperatorButton'
 
 export default async function OperatorPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

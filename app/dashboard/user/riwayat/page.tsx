@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { formatCurrency, formatNumber, formatPoin, formatDateTime } from '@/lib/utils'
+import { formatCurrency, formatPoin, formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -12,24 +12,23 @@ const PAGE_SIZE = 10
 export default async function UserRiwayatPage({
   searchParams,
 }: {
-  searchParams: { page?: string }
+  searchParams: Promise<{ page?: string }>
 }) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const page = parseInt(searchParams.page ?? '1')
+  const params = await searchParams
+  const page = parseInt(params.page ?? '1')
   const from = (page - 1) * PAGE_SIZE
   const to = from + PAGE_SIZE - 1
 
-  const [{ data: transaksi, count }] = await Promise.all([
-    supabase
-      .from('transaksi')
-      .select('*, jenis_sampah:jenis_sampah(nama), operator:profiles!operator_id(nama)', { count: 'exact' })
-      .eq('nasabah_id', user.id)
-      .order('created_at', { ascending: false })
-      .range(from, to),
-  ])
+  const { data: transaksi, count } = await supabase
+    .from('transaksi')
+    .select('*, jenis_sampah:jenis_sampah(nama), operator:profiles!operator_id(nama)', { count: 'exact' })
+    .eq('nasabah_id', user.id)
+    .order('created_at', { ascending: false })
+    .range(from, to)
 
   const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE)
 
@@ -90,7 +89,6 @@ export default async function UserRiwayatPage({
         </CardContent>
       </Card>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <Link href={`?page=${Math.max(1, page - 1)}`}>

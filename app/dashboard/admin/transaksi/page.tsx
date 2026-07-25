@@ -10,7 +10,7 @@ export default async function AdminTransaksiPage({
 }: {
   searchParams: Promise<{ q?: string; jenis?: string; from?: string; to?: string }>
 }) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
