@@ -14,10 +14,6 @@ const nextConfig = {
       },
     ],
   },
-  // Semua halaman harus dynamic, tidak boleh di-prerender saat build
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
 }
 
 module.exports = nextConfig
