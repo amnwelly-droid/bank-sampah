@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dialog'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from '@/components/ui/use-toast'
-import type { JenisSampah } from '@/types'
+import type { JenisSampah, KategoriSampah } from '@/types'
 
 interface JenisSampahActionsProps {
   mode: 'add' | 'edit'
@@ -127,7 +127,7 @@ export function JenisSampahActions({ mode, jenisSampah }: JenisSampahActionsProp
             <JenisSampahForm
               form={form}
               onChange={handleChange}
-              onKategoriChange={(v) => setForm(p => ({ ...p, kategori: v }))}
+              onKategoriChange={(v) => setForm(p => ({ ...p, kategori: v as KategoriSampah }))}
               onSubmit={handleSubmit}
               loading={loading}
               onCancel={() => setOpen(false)}
@@ -154,7 +154,7 @@ export function JenisSampahActions({ mode, jenisSampah }: JenisSampahActionsProp
         <JenisSampahForm
           form={form}
           onChange={handleChange}
-          onKategoriChange={(v) => setForm(p => ({ ...p, kategori: v }))}
+          onKategoriChange={(v) => setForm(p => ({ ...p, kategori: v as KategoriSampah }))}
           onSubmit={handleSubmit}
           loading={loading}
           onCancel={() => setOpen(false)}
