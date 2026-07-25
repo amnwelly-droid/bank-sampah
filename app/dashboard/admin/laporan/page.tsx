@@ -9,15 +9,16 @@ import { LaporanFilter } from './LaporanFilter'
 export default async function LaporanPage({
   searchParams,
 }: {
-  searchParams: { bulan?: string; tahun?: string }
+  searchParams: Promise<{ bulan?: string; tahun?: string }>
 }) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const params = await searchParams
   const now = new Date()
-  const bulan = searchParams.bulan ? parseInt(searchParams.bulan) : now.getMonth() + 1
-  const tahun = searchParams.tahun ? parseInt(searchParams.tahun) : now.getFullYear()
+  const bulan = params.bulan ? parseInt(params.bulan) : now.getMonth() + 1
+  const tahun = params.tahun ? parseInt(params.tahun) : now.getFullYear()
 
   const startDate = new Date(tahun, bulan - 1, 1).toISOString()
   const endDate = new Date(tahun, bulan, 0, 23, 59, 59).toISOString()

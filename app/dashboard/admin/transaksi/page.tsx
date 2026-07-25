@@ -8,36 +8,31 @@ import { TransaksiFilter } from './TransaksiFilter'
 export default async function AdminTransaksiPage({
   searchParams,
 }: {
-  searchParams: { q?: string; jenis?: string; from?: string; to?: string }
+  searchParams: Promise<{ q?: string; jenis?: string; from?: string; to?: string }>
 }) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const params = await searchParams
 
   let query = supabase
     .from('transaksi')
     .select('*, nasabah:profiles!nasabah_id(nama), operator:profiles!operator_id(nama), jenis_sampah:jenis_sampah(nama)')
     .order('created_at', { ascending: false })
 
-  if (searchParams.jenis) {
-    query = query.eq('jenis_sampah_id', searchParams.jenis)
-  }
-  if (searchParams.from) {
-    query = query.gte('created_at', searchParams.from)
-  }
-  if (searchParams.to) {
-    query = query.lte('created_at', searchParams.to + 'T23:59:59')
-  }
+  if (params.jenis) query = query.eq('jenis_sampah_id', params.jenis)
+  if (params.from) query = query.gte('created_at', params.from)
+  if (params.to) query = query.lte('created_at', params.to + 'T23:59:59')
 
   const { data: transaksi } = await query.limit(100)
 
-  const filtered = searchParams.q
+  const filtered = params.q
     ? transaksi?.filter((t: any) =>
-        t.nasabah?.nama?.toLowerCase().includes(searchParams.q!.toLowerCase())
+        t.nasabah?.nama?.toLowerCase().includes(params.q!.toLowerCase())
       )
     : transaksi
 
-  // Get jenis sampah for filter
   const { data: jenisList } = await supabase.from('jenis_sampah').select('id, nama').eq('aktif', true)
 
   const totalNilai = filtered?.reduce((sum: number, t: any) => sum + Number(t.total_nilai), 0) ?? 0
@@ -50,7 +45,6 @@ export default async function AdminTransaksiPage({
         <p className="text-gray-500 mt-1">Riwayat seluruh transaksi setoran sampah</p>
       </div>
 
-      {/* Summary */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-lg border p-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{filtered?.length ?? 0}</p>

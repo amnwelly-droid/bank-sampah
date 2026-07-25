@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Users } from 'lucide-react'
-import { formatCurrency, formatNumber, formatPoin } from '@/lib/utils'
+import { formatCurrency, formatPoin, formatDate } from '@/lib/utils'
 import type { Profile } from '@/types'
 import { NasabahSearch } from './NasabahSearch'
 import { AddNasabahButton } from './AddNasabahButton'
@@ -12,11 +12,13 @@ import { AddNasabahButton } from './AddNasabahButton'
 export default async function NasabahPage({
   searchParams,
 }: {
-  searchParams: { q?: string }
+  searchParams: Promise<{ q?: string }>
 }) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const params = await searchParams
 
   let query = supabase
     .from('profiles')
@@ -24,8 +26,8 @@ export default async function NasabahPage({
     .eq('role', 'user')
     .order('created_at', { ascending: false })
 
-  if (searchParams.q) {
-    query = query.ilike('nama', `%${searchParams.q}%`)
+  if (params.q) {
+    query = query.ilike('nama', `%${params.q}%`)
   }
 
   const { data: nasabah } = await query.returns<Profile[]>()
@@ -50,7 +52,7 @@ export default async function NasabahPage({
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <CardTitle className="text-base">Daftar Nasabah</CardTitle>
-            <NasabahSearch defaultValue={searchParams.q} />
+            <NasabahSearch defaultValue={params.q} />
           </div>
         </CardHeader>
         <CardContent className="p-0">
@@ -69,7 +71,7 @@ export default async function NasabahPage({
               {nasabah?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-gray-500 py-10">
-                    {searchParams.q ? 'Nasabah tidak ditemukan' : 'Belum ada nasabah terdaftar'}
+                    {params.q ? 'Nasabah tidak ditemukan' : 'Belum ada nasabah terdaftar'}
                   </TableCell>
                 </TableRow>
               )}
