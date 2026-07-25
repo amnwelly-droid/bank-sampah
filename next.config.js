@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
-    // Skip TypeScript errors during build - handled by IDE
     ignoreBuildErrors: true,
   },
   eslint: {
@@ -14,6 +13,10 @@ const nextConfig = {
         hostname: '*.supabase.co',
       },
     ],
+  },
+  // Semua halaman harus dynamic, tidak boleh di-prerender saat build
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
   },
 }
 
